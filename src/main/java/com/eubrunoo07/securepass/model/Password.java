@@ -17,5 +17,7 @@ public class Password {
     private String password;
     @Enumerated(EnumType.STRING)
     private PasswordLevel passwordLevel;
+    @Column
+    private String user_email;
 
 }

@@ -1,9 +1,6 @@
 package com.eubrunoo07.securepass.exception;
 
-import com.eubrunoo07.securepass.exception.exceptions.EmailAlreadyExistsException;
-import com.eubrunoo07.securepass.exception.exceptions.EmailAndUsernameAlreadyExistsException;
-import com.eubrunoo07.securepass.exception.exceptions.PasswordFormatIsInvalidException;
-import com.eubrunoo07.securepass.exception.exceptions.UsernameAlreadyExistsException;
+import com.eubrunoo07.securepass.exception.exceptions.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +42,18 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ApiError usernameAlreadyExistsException(UsernameAlreadyExistsException e){
+        return new ApiError(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ApiError userNotFoundException(UserNotFoundException e){
+        return new ApiError(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PasswordNotFoundException.class)
+    public ApiError passwordNotFoundException(PasswordNotFoundException e){
         return new ApiError(e.getMessage());
     }
 }
