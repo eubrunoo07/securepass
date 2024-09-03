@@ -13,6 +13,8 @@ public class User {
     private String id;
 
     @Column
+    private String name;
+    @Column
     private String username;
     @Column
     private String email;
