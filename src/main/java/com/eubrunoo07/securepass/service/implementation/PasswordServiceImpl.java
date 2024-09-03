@@ -50,10 +50,10 @@ public class PasswordServiceImpl implements PasswordService {
             pass = (firstName + "#" + platform + new Random().nextInt(10000, 50000)).replace(" ", ".");
         }
         else if(level == PasswordLevel.VERY_SAFE){
-            pass = (firstName + "@" + hashPassword(firstName, getSalt()) + "#" + platform).replace(" ", ".");
+            pass = (firstName + "@" + hashPassword(firstName, getSalt())).replace(" ", ".");
         }
         else{
-            pass = (hashPassword(firstName.concat(platform), getSalt()) + "#" + platform).replace(" ", ".");
+            pass = (hashPassword(firstName.concat(platform), getSalt())).replace(" ", ".");
         }
         password.setPassword(pass);
         password.setPasswordLevel(level);
@@ -70,7 +70,9 @@ public class PasswordServiceImpl implements PasswordService {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(salt);
         byte[] hashedPassword = md.digest(password.getBytes());
-        return Base64.getEncoder().encodeToString(hashedPassword);
+        byte[] truncatedHash = new byte[hashedPassword.length / 4];
+        System.arraycopy(hashedPassword, 0, truncatedHash, 0, truncatedHash.length);
+        return Base64.getEncoder().encodeToString(truncatedHash);
     }
 
     public static byte[] getSalt() throws NoSuchAlgorithmException {
