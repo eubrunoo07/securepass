@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PasswordResponseDTO {
     private String id;
-    private String password;
     private String email;
+    private String password;
+    private String platform;
     private String level;
 }

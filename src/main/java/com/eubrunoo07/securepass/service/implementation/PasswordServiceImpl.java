@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
@@ -42,21 +43,23 @@ public class PasswordServiceImpl implements PasswordService {
 
         String firstName = user.getName().split(" ")[0];
         String platform = dto.getPlatform();
+        String keyword = dto.getKeyword();
         PasswordLevel level = PasswordLevel.valueOf(dto.getLevel());
         Password password = new Password();
-        password.setUser_email(user.getEmail());
         String pass;
         if(level == PasswordLevel.SAFE){
-            pass = (firstName + "#" + platform + new Random().nextInt(10000, 50000)).replace(" ", ".");
+            pass = (firstName + "#" + keyword + new Random().nextInt(10000, 50000)).replace(" ", ".");
         }
         else if(level == PasswordLevel.VERY_SAFE){
-            pass = (firstName + "@" + hashPassword(firstName, getSalt())).replace(" ", ".");
+            pass = (keyword + "@" + hashPassword(firstName, getSalt())).replace(" ", ".");
         }
         else{
-            pass = (hashPassword(firstName.concat(platform), getSalt())).replace(" ", ".");
+            pass = ((hashPassword(firstName.concat(platform), getSalt())) + keyword).replace(" ", ".");
         }
         password.setPassword(pass);
         password.setPasswordLevel(level);
+        password.setEmail(dto.getEmail());
+        password.setPlatform(dto.getPlatform());
         passwordRepository.save(password);
         return password.getId();
     }

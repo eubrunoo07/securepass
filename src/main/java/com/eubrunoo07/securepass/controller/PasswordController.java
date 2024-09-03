@@ -41,7 +41,8 @@ public class PasswordController {
                 .password(password.getPassword())
                 .level(String.valueOf(password.getPasswordLevel()))
                 .id(password.getId())
-                .email(password.getUser_email())
+                .email(password.getEmail())
+                .platform(password.getPlatform())
                 .build());
 
     }

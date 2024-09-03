@@ -1,5 +1,6 @@
 package com.eubrunoo07.securepass.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,9 +15,14 @@ public class PasswordRequestDTO {
 
     @NotBlank(message = "User id field is missing")
     private String user_id;
-    @NotBlank(message = "Level field is missing")
-    private String level;
+    @NotBlank(message = "Email field is missing")
+    @Email(message = "Email is invalid")
+    private String email;
+    @NotBlank(message = "Keyword field is missing")
+    private String keyword;
     @NotBlank(message = "Platform field is missing")
     private String platform;
+    @NotBlank(message = "Level field is missing")
+    private String level;
 
 }
