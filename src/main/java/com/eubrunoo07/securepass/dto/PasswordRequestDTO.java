@@ -27,11 +27,8 @@ public class PasswordRequestDTO {
     @NotNull(message = "Special Characters field is missing")
     private boolean useSpecialCharacters;
     @NotNull(message = "Characters quantity field is missing")
-    @Min(1)
+    @Min(6)
     private Integer charactersQuantity;
-
-    @NotBlank(message = "Level field is missing")
-    private String level;
 
 
 }

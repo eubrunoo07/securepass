@@ -2,7 +2,6 @@ package com.eubrunoo07.securepass.controller;
 
 import com.eubrunoo07.securepass.dto.PasswordRequestDTO;
 import com.eubrunoo07.securepass.dto.PasswordResponseDTO;
-import com.eubrunoo07.securepass.enums.PasswordLevel;
 import com.eubrunoo07.securepass.exception.exceptions.PasswordNotFoundException;
 import com.eubrunoo07.securepass.model.Password;
 import com.eubrunoo07.securepass.model.User;
@@ -39,7 +38,6 @@ public class PasswordController {
         return ResponseEntity.status(HttpStatus.OK).body(PasswordResponseDTO
                 .builder()
                 .password(password.getPassword())
-                .level(String.valueOf(password.getPasswordLevel()))
                 .id(password.getId())
                 .email(password.getEmail())
                 .platform(password.getPlatform())

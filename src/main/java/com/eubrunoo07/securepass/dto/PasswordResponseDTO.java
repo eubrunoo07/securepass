@@ -14,5 +14,4 @@ public class PasswordResponseDTO {
     private String email;
     private String password;
     private String platform;
-    private String level;
 }

@@ -1,6 +1,5 @@
 package com.eubrunoo07.securepass.model;
 
-import com.eubrunoo07.securepass.enums.PasswordLevel;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,8 +14,6 @@ public class Password {
 
     @Column
     private String password;
-    @Enumerated(EnumType.STRING)
-    private PasswordLevel passwordLevel;
     @Column
     private String email;
     @Column

@@ -1,8 +1,6 @@
 package com.eubrunoo07.securepass.service.implementation;
 
 import com.eubrunoo07.securepass.dto.PasswordRequestDTO;
-import com.eubrunoo07.securepass.dto.UserRequestDTO;
-import com.eubrunoo07.securepass.enums.PasswordLevel;
 import com.eubrunoo07.securepass.exception.exceptions.UserNotFoundException;
 import com.eubrunoo07.securepass.model.Password;
 import com.eubrunoo07.securepass.model.User;
@@ -44,7 +42,6 @@ public class PasswordServiceImpl implements PasswordService {
         String firstName = user.getName().split(" ")[0];
         String platform = dto.getPlatform();
         String keyword = dto.getKeyword();
-        PasswordLevel level = PasswordLevel.valueOf(dto.getLevel());
         Password password = new Password();
         String pass;
 
@@ -54,24 +51,19 @@ public class PasswordServiceImpl implements PasswordService {
         }
 
         String baseString;
-        if(level == PasswordLevel.SAFE){
-            if(dto.isUseSpecialCharacters()){
-                baseString = firstName + "#" + keyword + new Random().nextInt(10000, 50000);
-            } else {
-                baseString = firstName + LocalDate.now().getYear() + keyword + new Random().nextInt(10000, 50000);
-            }
-        } else if(level == PasswordLevel.VERY_SAFE){
-            if(dto.isUseSpecialCharacters()){
-                baseString = keyword + "@" + hashPassword(firstName, getSalt(), true);
-            } else {
-                baseString = keyword + hashPassword(firstName, getSalt(), false);
-            }
+        if (dto.isUseSpecialCharacters()) {
+            baseString = firstName.substring(0, firstName.length()/2) + "#" + LocalDate.now().getDayOfMonth() + keyword + new Random().nextInt(10000, 50000);
         } else {
-            if(dto.isUseSpecialCharacters()){
-                baseString =  keyword + hashPassword(firstName.concat(platform), getSalt(), true);
-            } else {
-                baseString = keyword + hashPassword(firstName.concat(platform), getSalt(), false);
+            baseString = firstName.substring(0, firstName.length()/2) + LocalDate.now().getYear() + keyword + new Random().nextInt(10000, 50000);
+        }
+
+        baseString = baseString.replace(" ", "");
+        if (baseString.length() < length) {
+            while (baseString.length() < length) {
+                baseString += new Random().nextInt(10);
             }
+        } else if (baseString.length() > length) {
+            baseString = baseString.substring(0, length);
         }
 
         pass = baseString.replace(" ", "");
@@ -84,7 +76,6 @@ public class PasswordServiceImpl implements PasswordService {
         }
 
         password.setPassword(pass);
-        password.setPasswordLevel(level);
         password.setEmail(dto.getEmail());
         password.setPlatform(dto.getPlatform());
         passwordRepository.save(password);
