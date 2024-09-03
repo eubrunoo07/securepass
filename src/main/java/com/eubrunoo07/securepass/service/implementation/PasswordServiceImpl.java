@@ -47,15 +47,42 @@ public class PasswordServiceImpl implements PasswordService {
         PasswordLevel level = PasswordLevel.valueOf(dto.getLevel());
         Password password = new Password();
         String pass;
+
+        int length = dto.getCharactersQuantity();
+        if (length < 6) {
+            length = 6;
+        }
+
+        String baseString;
         if(level == PasswordLevel.SAFE){
-            pass = (firstName + "#" + keyword + new Random().nextInt(10000, 50000)).replace(" ", ".");
+            if(dto.isUseSpecialCharacters()){
+                baseString = firstName + "#" + keyword + new Random().nextInt(10000, 50000);
+            } else {
+                baseString = firstName + LocalDate.now().getYear() + keyword + new Random().nextInt(10000, 50000);
+            }
+        } else if(level == PasswordLevel.VERY_SAFE){
+            if(dto.isUseSpecialCharacters()){
+                baseString = keyword + "@" + hashPassword(firstName, getSalt(), true);
+            } else {
+                baseString = keyword + hashPassword(firstName, getSalt(), false);
+            }
+        } else {
+            if(dto.isUseSpecialCharacters()){
+                baseString =  keyword + hashPassword(firstName.concat(platform), getSalt(), true);
+            } else {
+                baseString = keyword + hashPassword(firstName.concat(platform), getSalt(), false);
+            }
         }
-        else if(level == PasswordLevel.VERY_SAFE){
-            pass = (keyword + "@" + hashPassword(firstName, getSalt())).replace(" ", ".");
+
+        pass = baseString.replace(" ", "");
+        if (pass.length() < length) {
+            while (pass.length() < length) {
+                pass += new Random().nextInt(10);
+            }
+        } else if (pass.length() > length) {
+            pass = pass.substring(0, length);
         }
-        else{
-            pass = ((hashPassword(firstName.concat(platform), getSalt())) + keyword).replace(" ", ".");
-        }
+
         password.setPassword(pass);
         password.setPasswordLevel(level);
         password.setEmail(dto.getEmail());
@@ -69,13 +96,19 @@ public class PasswordServiceImpl implements PasswordService {
         return passwordRepository.findById(id);
     }
 
-    public static String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException {
+    public static String hashPassword(String password, byte[] salt, boolean useSpecialCharacters) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(salt);
         byte[] hashedPassword = md.digest(password.getBytes());
         byte[] truncatedHash = new byte[hashedPassword.length / 4];
         System.arraycopy(hashedPassword, 0, truncatedHash, 0, truncatedHash.length);
-        return Base64.getEncoder().encodeToString(truncatedHash);
+        String encodedHash = Base64.getEncoder().encodeToString(truncatedHash);
+
+        if (!useSpecialCharacters) {
+            encodedHash = encodedHash.replaceAll("[^a-zA-Z0-9]", "");
+        }
+
+        return encodedHash;
     }
 
     public static byte[] getSalt() throws NoSuchAlgorithmException {
