@@ -4,6 +4,7 @@ import com.eubrunoo07.securepass.dto.UserRequestDTO;
 import com.eubrunoo07.securepass.dto.UserResponseDTO;
 import com.eubrunoo07.securepass.model.User;
 import com.eubrunoo07.securepass.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "Create user", description = "Put all user information's to create your account", tags = "Users")
     @PostMapping("/create")
     public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequestDTO dto){
         User user = userService.dataToEntity(dto);
@@ -29,6 +31,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Operation(summary = "List users", description = "Get all users", tags = "Users")
     @GetMapping("/")
     public ResponseEntity<List<UserResponseDTO>> users(){
         List<User> allUsers = userService.findAll();

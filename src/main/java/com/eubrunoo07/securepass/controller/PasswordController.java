@@ -7,6 +7,7 @@ import com.eubrunoo07.securepass.model.Password;
 import com.eubrunoo07.securepass.model.User;
 import com.eubrunoo07.securepass.service.PasswordService;
 import com.eubrunoo07.securepass.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class PasswordController {
     @Autowired
     private UserService userService;
 
+
+    @Operation(summary = "Generate password", description = "Put all password information's to create a best password for you", tags = "Passwords")
     @PostMapping("/create")
     public ResponseEntity<Object> generatePassword(@RequestBody@Valid PasswordRequestDTO dto) throws NoSuchAlgorithmException {
         passwordService.verifyId(dto.getUser_id());
@@ -32,6 +35,7 @@ public class PasswordController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
+    @Operation(summary = "Get password", description = "Get your password with id", tags = "Passwords")
     @GetMapping("/{id}")
     public ResponseEntity<PasswordResponseDTO> password(@PathVariable String id){
         Password password = passwordService.findById(id).orElseThrow(() -> new PasswordNotFoundException("Password not found"));
