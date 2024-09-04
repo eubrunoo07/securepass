@@ -10,12 +10,13 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customAPI(){
+    public OpenAPI securePassOpenAPI(){
         return new OpenAPI()
                 .info(new Info()
-                        .title("Secure Password for Me")
+                        .title("Secure Pass for Me")
                         .version("1.0.0v")
-                        .license(new License().name("License system").url("github.com/eubrunoo07/securepass")));
+                        .license(new License().name("Secure Pass License")
+                                .url("www.github.com/eubrunoo07/securepass")));
     }
 
 }
