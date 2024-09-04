@@ -54,7 +54,7 @@ public class PasswordServiceImpl implements PasswordService {
         if (dto.isUseSpecialCharacters()) {
             baseString = firstName.substring(0, firstName.length()/2) + "#" + LocalDate.now().getDayOfMonth() + keyword + new Random().nextInt(10000, 50000);
         } else {
-            baseString = firstName.substring(0, firstName.length()/2) + LocalDate.now().getYear() + keyword + new Random().nextInt(10000, 50000);
+            baseString = firstName.substring(0, firstName.length()/2) + LocalDate.now().getDayOfMonth() + keyword + new Random().nextInt(10000, 50000);
         }
 
         baseString = baseString.replace(" ", "");
@@ -91,7 +91,7 @@ public class PasswordServiceImpl implements PasswordService {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(salt);
         byte[] hashedPassword = md.digest(password.getBytes());
-        byte[] truncatedHash = new byte[hashedPassword.length / 4];
+        byte[] truncatedHash = new byte[hashedPassword.length / 2];
         System.arraycopy(hashedPassword, 0, truncatedHash, 0, truncatedHash.length);
         String encodedHash = Base64.getEncoder().encodeToString(truncatedHash);
 
