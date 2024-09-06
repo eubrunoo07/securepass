@@ -1,6 +1,7 @@
 package com.eubrunoo07.securepass.service.implementation;
 
 import com.eubrunoo07.securepass.dto.UserRequestDTO;
+import com.eubrunoo07.securepass.enums.UserRole;
 import com.eubrunoo07.securepass.exception.exceptions.EmailAlreadyExistsException;
 import com.eubrunoo07.securepass.exception.exceptions.EmailAndUsernameAlreadyExistsException;
 import com.eubrunoo07.securepass.exception.exceptions.PasswordFormatIsInvalidException;
@@ -10,6 +11,7 @@ import com.eubrunoo07.securepass.repository.UserRepository;
 import com.eubrunoo07.securepass.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +22,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User dataToEntity(UserRequestDTO dto) {
         User user = new User();
         BeanUtils.copyProperties(dto, user);
+        user.setRole(UserRole.valueOf(dto.getRole()));
         return user;
     }
 
@@ -52,6 +57,8 @@ public class UserServiceImpl implements UserService {
         else{
             String REGEX_PASSWORD = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'<>,.?/]).{8,}$";
             if(user.getPassword().matches(REGEX_PASSWORD)){
+                String encryptedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encryptedPassword);
                 this.save(user);
             }
             else{

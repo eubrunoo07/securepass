@@ -12,3 +12,5 @@ springdoc:
     path: /api/api-docs
   swagger-ui:
     path: /swagger-ui/index.html
+security:
+  secret: mysecret

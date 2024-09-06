@@ -31,6 +31,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/ok")
+    public ResponseEntity<Object> test(){
+        return ResponseEntity.status(HttpStatus.CREATED).body("Olá, Mundo!");
+    }
+
     @Operation(summary = "List users", description = "Get all users", tags = "Users")
     @GetMapping("/")
     public ResponseEntity<List<UserResponseDTO>> users(){
@@ -39,6 +44,7 @@ public class UserController {
         for (User allUser : allUsers) {
             UserResponseDTO responseDTO = new UserResponseDTO();
             BeanUtils.copyProperties(allUser, responseDTO);
+            responseDTO.setRole(String.valueOf(allUser.getRole()));
             response.add(responseDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
